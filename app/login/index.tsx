@@ -1,9 +1,23 @@
 import { useRouter } from "expo-router";
-import { SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
-
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Login() {
     const router = useRouter();
+
+    const sendLogin = async () => {
+      try{
+        //const response = await login();
+       // if (response.success){
+          router.replace("/(tabs)/explore")
+        //}else{
+
+       // }
+
+      }catch(error){
+        console.error('Error en SendLogin', error);
+      }
+    }
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
       <View style={{ 
@@ -32,13 +46,13 @@ export default function Login() {
           {/* Logo y título - AHORA BIEN CENTRADO */}
           <View style={{ alignItems: 'center', marginBottom: 20 }}>
             {/* Contenedor del logo */}
-            {/* <View style={{ justifyContent: "center", alignItems: "center", marginBottom: 10 }}>
-                <Image
-                    source={require("../../assets/images/logo.png")}
+            <View style={{ justifyContent: "center", alignItems: "center", marginBottom: 10 }}>
+                {/* <Image
+                    source={require("../../src/assets/images/logo.png")}
                     style={{ width: 420, height: 220 }}
                     resizeMode="contain"
-                />
-            </View> */}
+                /> */}
+            </View>
             
             {/* Título separado del logo */}
             <Text style={{ 
@@ -79,7 +93,7 @@ export default function Login() {
               color: '#555',
               marginBottom: 5,
               marginLeft: 5
-            }}>
+            }} >
               Correo Electrónico
             </Text>
             <TextInput 
@@ -137,7 +151,7 @@ export default function Login() {
               shadowRadius: 5,
               elevation: 3,
             }}
-            onPress={() => router.replace("/(tabs)/explore")}
+            onPress={sendLogin}
           >
             <Text style={{ 
               color: 'white',
