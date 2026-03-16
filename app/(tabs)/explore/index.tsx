@@ -2,29 +2,35 @@ import { getAvailableProducts } from '@/src/api/Products/products.route';
 import { ProductCard } from '@/src/components/common/productCard';
 import { SearchInput } from '@/src/components/ui/Inputs/Input';
 import { Typography } from '@/src/components/ui/Texts/Texts';
+import { useAuth } from '@/src/contexts/auth/authContext';
 import { ProductType } from '@/src/types/ProductsTypes/products';
 import { Ionicons } from "@expo/vector-icons";
 import Entypo from '@expo/vector-icons/Entypo';
 import Feather from '@expo/vector-icons/Feather';
 import { useEffect, useState } from 'react';
-import { FlatList, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
-7
+import { ActivityIndicator, FlatList, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+
 export default function Explore() {
     const categories = ["Todos", "Panadería", "Restaurante", "Postre"]
     const [productsData, setProductsData] = useState<ProductType[]>([]);   
     const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
+    const [isLoading, setIsLoading] = useState<Boolean>(false);  
+    const {userName} = useAuth()
+
     useEffect(()=>{
         const getProductsData = async () =>{
             try{
-                const response = await  getAvailableProducts();
-                setProductsData(response.data);
-       
+                setIsLoading(true);
+                const response = await  getAvailableProducts(selectedCategory);
+                setProductsData(response.data);       
             }catch(error){
                 console.error('Error en getProductsData: ', error);
+            }finally{
+                setIsLoading(false);
             }
         }
         getProductsData();
-    },[])
+    },[selectedCategory])
 
     const Header = () => (
         <>
@@ -44,7 +50,7 @@ export default function Explore() {
                 </View>
 
                 <View style={{display:'flex', gap:10}}>
-                    <Typography variant='title'>Hola, Juan</Typography>
+                    <Typography variant='title'>Hola, {userName}</Typography>
                     <Typography>¿Qué quieres salvar hoy?</Typography>
                 </View>
 
@@ -60,45 +66,54 @@ export default function Explore() {
                 <Typography variant='title' style={{color:'black'}}>Disponible cerca de ti</Typography>
             </View> 
 
-                <View style={{ paddingHorizontal: 16, marginBottom: 16 }}>
-                    <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={{ paddingBottom: 8 }}
-                    >
-                        <View style={{ flexDirection: "row", gap: 8 }}>
-                        {categories.map((category) => (
-                            <TouchableOpacity
-                            key={category}
-                            onPress={() => setSelectedCategory(category)}
-                            style={{
-                                paddingHorizontal: 16,
-                                paddingVertical: 8,
-                                borderRadius: 999,
-                                backgroundColor:
-                                selectedCategory === category ? "#2563EB" : "#FFFFFF",
-                                shadowColor:
-                                selectedCategory === category ? "#000" : "transparent",
-                                shadowOffset: { width: 0, height: 2 },
-                                shadowOpacity: selectedCategory === category ? 0.15 : 0,
-                                shadowRadius: selectedCategory === category ? 4 : 0,
-                                elevation: selectedCategory === category ? 3 : 0,
-                            }}
-                            >
-                            <Text
+                {isLoading ? (
+                    <View style={{ paddingVertical: 20, alignItems: "center" }}>
+                        <ActivityIndicator size="large" color="#4F46E5" />
+                    </View>
+                ):(                
+                    <View style={{ paddingHorizontal: 16, marginBottom: 16 }}>
+                        <ScrollView
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            contentContainerStyle={{ paddingBottom: 8 }}
+                        >
+                            <View style={{ flexDirection: "row", gap: 8 }}>
+                            {categories.map((category) => (
+                                <TouchableOpacity
+                                key={category}
+                                onPress={() => setSelectedCategory(category)}
                                 style={{
-                                color:
-                                    selectedCategory === category ? "#FFFFFF" : "#4B5563",
-                                fontWeight: "500",
+                                    paddingHorizontal: 16,
+                                    paddingVertical: 8,
+                                    borderRadius: 999,
+                                    backgroundColor:
+                                    selectedCategory === category ? "#2563EB" : "#FFFFFF",
+                                    shadowColor:
+                                    selectedCategory === category ? "#000" : "transparent",
+                                    shadowOffset: { width: 0, height: 2 },
+                                    shadowOpacity: selectedCategory === category ? 0.15 : 0,
+                                    shadowRadius: selectedCategory === category ? 4 : 0,
+                                    elevation: selectedCategory === category ? 3 : 0,
                                 }}
-                            >
-                                {category}
-                            </Text>
-                            </TouchableOpacity>
-                        ))}
-                        </View>
-                    </ScrollView>
-            </View>
+                                >
+                                <Text
+                                    style={{
+                                    color:
+                                        selectedCategory === category ? "#FFFFFF" : "#4B5563",
+                                    fontWeight: "500",
+                                    }}
+                                >
+                                    {category}
+                                </Text>
+                                </TouchableOpacity>
+                            ))}
+                            </View>
+                        </ScrollView>
+                    </View>
+                )
+
+                }
+                
         </>
     )
     return (

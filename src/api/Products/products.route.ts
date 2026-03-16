@@ -1,9 +1,8 @@
 
 
-export const getAvailableProducts = async() => {
-    console.log('getAvailableProducts')
-    try{
-        // const response = await axios.get('');
+export const getAvailableProducts = async(selectedCategory:string) => {
+    console.log('selectedCategory', selectedCategory)    
+    try{        
         return {
             sucess:true,            
             data:[

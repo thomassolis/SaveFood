@@ -1,18 +1,41 @@
+import { login } from "@/src/api/auth/Login";
+import { useAuth } from "@/src/contexts/auth/authContext";
 import { useRouter } from "expo-router";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Toast from "react-native-toast-message";
 
-export default function Login() {
-    const router = useRouter();
-
+export default function Login() {    
+  const {email, setEmail, password, setPassword, setUserName, setLastName, setUserRol} = useAuth();
+    const router = useRouter();    
     const sendLogin = async () => {
       try{
-        //const response = await login();
-       // if (response.success){
+        const response = await login({email, password});
+        if (response?.success){
           router.replace("/(tabs)/explore")
-        //}else{
-
-       // }
+          setUserName(response?.data.name);
+          setLastName(response?.data.lastName);
+          setUserRol(response?.data.rol);
+          Toast.show({
+            type: 'success',
+            text1: '¡Éxito!',
+            text2: response?.message,
+            position: 'top',
+            visibilityTime: 3000,
+            autoHide: true,
+            topOffset: 60,
+          });
+        }else{
+          Toast.show({
+            type: 'error',
+            text1: 'Error',
+            text2: response?.message,
+            position: 'top',
+            visibilityTime: 3000,
+            autoHide: true,
+            topOffset: 60,
+          });
+        }
 
       }catch(error){
         console.error('Error en SendLogin', error);
@@ -108,6 +131,7 @@ export default function Login() {
                 borderColor: '#e0e0e0',
                 marginBottom: 15
               }}
+              onChangeText={setEmail}
             />
 
             <Text style={{ 
@@ -131,6 +155,7 @@ export default function Login() {
                 borderWidth: 1,
                 borderColor: '#e0e0e0'
               }}
+              onChangeText={setPassword}
             />
           </View>
 
