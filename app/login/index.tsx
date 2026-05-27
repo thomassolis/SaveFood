@@ -1,9 +1,11 @@
 import { login } from "@/src/api/auth/Login";
+import PrimaryButton from "@/src/components/ui/Button/PrimaryButton";
 import { useAuth } from "@/src/contexts/auth/authContext";
 import { useRouter } from "expo-router";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from "react-native-toast-message";
+
 
 export default function Login() {    
   const {email, setEmail, password, setPassword, setUserName, setLastName, setUserRol} = useAuth();
@@ -160,32 +162,7 @@ export default function Login() {
           </View>
 
           {/* Botón de inicio de sesión */}
-          <TouchableOpacity 
-            style={{ 
-              backgroundColor: '#4F46E5',
-              borderRadius: 12,
-              padding: 18,
-              alignItems: 'center',
-              marginTop: 10,
-              shadowColor: "#4F46E5",
-              shadowOffset: {
-                width: 0,
-                height: 4,
-              },
-              shadowOpacity: 0.2,
-              shadowRadius: 5,
-              elevation: 3,
-            }}
-            onPress={sendLogin}
-          >
-            <Text style={{ 
-              color: 'white',
-              fontSize: 18,
-              fontWeight: 'bold'
-            }}>
-              Iniciar Sesión
-            </Text>
-          </TouchableOpacity>
+          <PrimaryButton text="Iniciar Sesión" onPress={sendLogin}></PrimaryButton>
 
           {/* Enlaces adicionales */}
           <View style={{ 
